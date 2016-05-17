@@ -1,0 +1,74 @@
+\section{pcm-\/core.cpp File Reference}
+\label{pcm-core_8cpp}\index{pcm-\/core.\+cpp@{pcm-\/core.\+cpp}}
+
+
+Example of using C\+PU counters\+: implements a performance counter monitoring utility for Intel Core, Offcore events.  
+
+
+{\ttfamily \#include $<$iostream$>$}\\*
+{\ttfamily \#include $<$unistd.\+h$>$}\\*
+{\ttfamily \#include $<$signal.\+h$>$}\\*
+{\ttfamily \#include $<$sys/time.\+h$>$}\\*
+{\ttfamily \#include $<$math.\+h$>$}\\*
+{\ttfamily \#include $<$iomanip$>$}\\*
+{\ttfamily \#include $<$stdlib.\+h$>$}\\*
+{\ttfamily \#include $<$stdio.\+h$>$}\\*
+{\ttfamily \#include $<$string.\+h$>$}\\*
+{\ttfamily \#include $<$string$>$}\\*
+{\ttfamily \#include $<$assert.\+h$>$}\\*
+{\ttfamily \#include $<$bitset$>$}\\*
+{\ttfamily \#include \char`\"{}cpucounters.\+h\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}utils.\+h\char`\"{}}\\*
+{\ttfamily \#include $<$vector$>$}\\*
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct {\bf Core\+Event}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define {\bfseries H\+A\+C\+K\+\_\+\+T\+O\+\_\+\+R\+E\+M\+O\+V\+E\+\_\+\+D\+U\+P\+L\+I\+C\+A\+T\+E\+\_\+\+E\+R\+R\+OR}\label{pcm-core_8cpp_ac4eeb11d89b0f517835a12a04443ebe4}
+
+\item 
+\#define {\bfseries P\+C\+M\+\_\+\+D\+E\+L\+A\+Y\+\_\+\+D\+E\+F\+A\+U\+LT}~1.\+0\label{pcm-core_8cpp_aa9ecc55c90c7a69729babc4f5f91ed96}
+
+\item 
+\#define {\bfseries P\+C\+M\+\_\+\+D\+E\+L\+A\+Y\+\_\+\+M\+IN}~0.\+015\label{pcm-core_8cpp_acccbe8441d6dd75bdc949f5f0ee126c5}
+
+\item 
+\#define {\bfseries P\+C\+M\+\_\+\+C\+A\+L\+I\+B\+R\+A\+T\+I\+O\+N\+\_\+\+I\+N\+T\+E\+R\+V\+AL}~50\label{pcm-core_8cpp_a433dde946b6713059756318598c9a6fe}
+
+\item 
+\#define {\bfseries M\+A\+X\+\_\+\+C\+O\+R\+ES}~4096\label{pcm-core_8cpp_a009855593b59738d24dbfc236edb3b14}
+
+\item 
+\#define {\bfseries E\+V\+E\+N\+T\+\_\+\+S\+I\+ZE}~256\label{pcm-core_8cpp_a228783873815e02b069a286af4512aba}
+
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void {\bfseries print\+\_\+usage} (const string progname)\label{pcm-core_8cpp_a4e43544978d9afb2faf08dce11cab70c}
+
+\item 
+{\footnotesize template$<$class State\+Type $>$ }\\void {\bfseries print\+\_\+custom\+\_\+stats} (const State\+Type \&Before\+State, const State\+Type \&After\+State, bool csv, uint64 txn\+\_\+rate)\label{pcm-core_8cpp_a857456f644c2e58f064fa2f70accc4dd}
+
+\item 
+void {\bfseries build\+\_\+event} (const char $\ast$argv, {\bf Event\+Select\+Register} $\ast$reg, int idx)\label{pcm-core_8cpp_ac493787fd6910618e564b9af590d4a7e}
+
+\item 
+int {\bfseries main} (int argc, char $\ast$argv[$\,$])\label{pcm-core_8cpp_a0ddf1224851353fc92bfbff6f499fa97}
+
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+struct {\bf Core\+Event} {\bfseries events} [4]\label{pcm-core_8cpp_a0ae00fbd22b434b051a6b708d5d4ecd2}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Example of using C\+PU counters\+: implements a performance counter monitoring utility for Intel Core, Offcore events. 
+
