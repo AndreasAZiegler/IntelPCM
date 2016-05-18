@@ -185,6 +185,67 @@ typedef signed int int32;
 #define UNC_QHL_REQUESTS_LOCAL_READS_UMASK      (0x10)
 #define UNC_QHL_REQUESTS_LOCAL_WRITES_UMASK     (0x20)
 
+// For Sandy Bridge and Ivy Bridge
+
+#define MSR_UNC_PERF_GLOBAL_CTRL        (0x391)
+
+#define MSR_UNC_ARB_PER_CTR0			(0x3B0)				
+#define MSR_UNC_ARB_PER_CTR1			(0x3B1)
+
+#define MSR_UNC_ARB_PERFEVTSEL0			(0x3B2)
+#define MSR_UNC_ARB_PERFEVTSEL1			(0x3B3)
+
+#define UNC_ARB_TRK_REQUEST_EVICTIONS_EVTNR   (0x81)
+#define UNC_ARB_TRK_REQUEST_EVICTIONS_UMASK   (0x80)
+
+#define UNC_ARB_TRK_REQUEST_WRITES_EVTNR   (0x81)
+#define UNC_ARB_TRK_REQUEST_WRITES_UMASK   (0x20)
+
+
+#define MSR_UNC_CBO_0_PERFEVTSEL0			(0x700)
+#define MSR_UNC_CBO_0_PERFEVTSEL1			(0x701)
+
+#define MSR_UNC_CBO_1_PERFEVTSEL0			(0x710)
+#define MSR_UNC_CBO_1_PERFEVTSEL1			(0x711)
+
+#define MSR_UNC_CBO_2_PERFEVTSEL0			(0x720)
+#define MSR_UNC_CBO_2_PERFEVTSEL1			(0x721)
+
+#define MSR_UNC_CBO_3_PERFEVTSEL0			(0x730)
+#define MSR_UNC_CBO_3_PERFEVTSEL1			(0x731)
+
+
+#define MSR_UNC_CBO_0_PER_CTR0				(0x706)
+#define MSR_UNC_CBO_0_PER_CTR1				(0x707)
+
+#define MSR_UNC_CBO_1_PER_CTR0				(0x716)
+#define MSR_UNC_CBO_1_PER_CTR1				(0x717)
+
+#define MSR_UNC_CBO_2_PER_CTR0				(0x726)
+#define MSR_UNC_CBO_2_PER_CTR1				(0x727)
+
+#define MSR_UNC_CBO_3_PER_CTR0				(0x736)
+#define MSR_UNC_CBO_3_PER_CTR1				(0x737)
+
+
+#define UNC_CBO_CACHE_LOOKUP_ANY_I_EVENTNR	(0x34)
+#define UNC_CBO_CACHE_LOOKUP_ANY_I_UMASK	(0x88)
+
+/*
+ * Non-Architectural Uncore Performance Events in the 4th Generation Inter Core Processor
+ */
+
+
+#define UNC_ARB_TRK_REQUEST_ALL_EVTNR           (0x81)
+#define UNC_ARB_TRK_REQUEST_ALL_UMASK           (0x01)
+
+#define UNC_CBO_CACHE_LOOKUP_I_EVTNR            (0x34)
+#define UNC_CBO_CACHE_LOOKUP_I_UMASK            (0x08)
+
+#define UNC_CBO_CACHE_LOOKUP_ANY_REQUEST_FILTER_EVTNR (0x34)
+#define UNC_CBO_CACHE_LOOKUP_ANY_REQUEST_FILTER_UMASK (0x80)
+ 
+
 /*
         From "Intel(r) Xeon(r) Processor 7500 Series Uncore Programming Guide"
 */
@@ -374,6 +435,60 @@ inline std::ostream & operator << (std::ostream & o, const FixedEventControlRegi
 }
 
 // UNCORE COUNTER CONTROL
+
+// Start modification
+
+//GO: Start Sandy Bridge uncore
+
+struct UncoreEventSelectRegisterSandy
+{
+    union
+    {
+        struct
+        {
+            uint64 event_select : 8;
+            uint64 umask : 8;
+            uint64 reserved1 : 2;            
+            uint64 edge : 1;
+            uint64 reserved2 : 1;
+            uint64 enable_pmi : 1;
+	    uint64 reserved3 : 1;
+	    uint64 enable : 1;
+	    uint64 invert : 1;
+	    uint64 cmask : 4;	            
+            uint64 reservedx : 36;
+        } fields;
+        uint64 value;
+    };
+};
+
+struct UncoreGlobalControlRegisterSandy
+{
+    union
+    {
+        struct
+        {
+	    uint64 PMI_Sel_Core0 : 1;
+	    uint64 PMI_Sel_Core1 : 1;
+	    uint64 PMI_Sel_Core2 : 1;
+	    uint64 PMI_Sel_Core3 : 1;
+
+	    uint64 reserved1 : 25;            
+
+	    uint64 enable : 1;
+	    uint64 wakePMI : 1;
+	    uint64 FREEZE : 1;			
+            
+            uint64 reserved2: 32;                        
+        } fields;
+        uint64 value;
+    };
+};
+
+
+//GO: End Sandy Bridge uncore
+
+// End modification
 
 /* \brief Uncore Event Select Register Register format
 

@@ -85,6 +85,8 @@ int convertUnknownToInt(size_t size, char* value);
 #define PCM_NUM_INSTANCES_SEMAPHORE_NAME "Num Intel(r) PCM insts"
 #endif
 
+unsigned long g_offcore_response0, g_offcore_response1;
+
 #ifdef _MSC_VER
 
 HMODULE hOpenLibSys = NULL;
@@ -1742,6 +1744,27 @@ PCM::ErrorCode PCM::program(const PCM::ProgramMode mode_, const void * parameter
         MSR[i]->write(IA32_CR_PERF_GLOBAL_CTRL, 0);
         MSR[i]->read(IA32_CR_FIXED_CTR_CTRL, &ctrl_reg.value);
 
+	// Modification start
+	//GO: Change to program offcore response events
+	#define MSR_OFFCORE_RSP_0 (0x1A6)
+	#define MSR_OFFCORE_RSP_1 (0x1A7)
+
+	std::cout <<std::endl << "offcore response!" << g_offcore_response0 << std::endl;
+	if (g_offcore_response0 != 0)
+	{
+		std::cout <<"Programmed offcore response!"<< std::endl;
+		MSR[i]->write(MSR_OFFCORE_RSP_0, 0);
+		MSR[i]->write(MSR_OFFCORE_RSP_0, g_offcore_response0);
+		
+	}
+	if (g_offcore_response1 != 0)
+	{
+		MSR[i]->write(MSR_OFFCORE_RSP_1, 0);
+		MSR[i]->write(MSR_OFFCORE_RSP_1, g_offcore_response1);
+	}
+	//--GO End
+	// Modification end
+
 	
 	if(EXT_CUSTOM_CORE_EVENTS == mode_ && pExtDesc && pExtDesc->fixedCfg)
 	{
@@ -1838,6 +1861,16 @@ PCM::ErrorCode PCM::program(const PCM::ProgramMode mode_, const void * parameter
 
         // program uncore counters
 
+	// Modification start
+	if (cpu_model == SANDY_BRIDGE || cpu_model == IVY_BRIDGE)
+	{
+	    programSandyBridgeUncore(i);
+	}
+	else if (cpu_model == HASWELL)
+	{
+	    programSandyBridgeUncore(i);
+	}
+	// Modification end
         if (cpu_model == NEHALEM_EP || cpu_model == WESTMERE_EP || cpu_model == CLARKDALE)
         {
             programNehalemEPUncore(i);
@@ -1882,6 +1915,134 @@ void PCM::reportQPISpeed() const
     }
 
 }
+
+void PCM::programSandyBridgeUncore (int32 core)
+{
+	UncoreGlobalControlRegisterSandy unc_control;
+	UncoreEventSelectRegisterSandy unc_event_select_reg;
+
+	core_gen_counter_width = 44;
+	//ARB0
+	MSR[core]->read(MSR_UNC_ARB_PERFEVTSEL0, &unc_event_select_reg.value);
+
+	unc_event_select_reg.fields.event_select = UNC_ARB_TRK_REQUEST_EVICTIONS_EVTNR;
+    unc_event_select_reg.fields.umask = UNC_ARB_TRK_REQUEST_EVICTIONS_UMASK;
+
+    unc_event_select_reg.fields.edge = 0; \
+    unc_event_select_reg.fields.enable_pmi = 0; \
+    unc_event_select_reg.fields.enable = 1; \
+    unc_event_select_reg.fields.invert = 0; \
+    unc_event_select_reg.fields.cmask = 0;
+
+    MSR[core]->write(MSR_UNC_ARB_PERFEVTSEL0, unc_event_select_reg.value);
+		
+	//ARB1
+	MSR[core]->read(MSR_UNC_ARB_PERFEVTSEL1, &unc_event_select_reg.value);
+
+	unc_event_select_reg.fields.event_select = UNC_ARB_TRK_REQUEST_WRITES_EVTNR;
+    unc_event_select_reg.fields.umask = UNC_ARB_TRK_REQUEST_WRITES_UMASK;
+
+    unc_event_select_reg.fields.edge = 0; \
+    unc_event_select_reg.fields.enable_pmi = 0; \
+    unc_event_select_reg.fields.enable = 1; \
+    unc_event_select_reg.fields.invert = 0; \
+    unc_event_select_reg.fields.cmask = 0;
+
+    MSR[core]->write(MSR_UNC_ARB_PERFEVTSEL1, unc_event_select_reg.value);
+
+	
+	//CBO0
+	MSR[core]->read(MSR_UNC_CBO_0_PERFEVTSEL0, &unc_event_select_reg.value);
+
+	unc_event_select_reg.fields.event_select = UNC_CBO_CACHE_LOOKUP_ANY_I_EVENTNR;
+    unc_event_select_reg.fields.umask = UNC_CBO_CACHE_LOOKUP_ANY_I_UMASK;
+
+    unc_event_select_reg.fields.edge = 0; \
+    unc_event_select_reg.fields.enable_pmi = 0; \
+    unc_event_select_reg.fields.enable = 1; \
+    unc_event_select_reg.fields.invert = 0; \
+    unc_event_select_reg.fields.cmask = 0;
+
+	MSR[core]->write(MSR_UNC_CBO_0_PERFEVTSEL0, unc_event_select_reg.value);
+
+	//CBO1
+	MSR[core]->read(MSR_UNC_CBO_1_PERFEVTSEL0, &unc_event_select_reg.value);
+
+	unc_event_select_reg.fields.event_select = UNC_CBO_CACHE_LOOKUP_ANY_I_EVENTNR;
+    unc_event_select_reg.fields.umask = UNC_CBO_CACHE_LOOKUP_ANY_I_UMASK;
+
+    unc_event_select_reg.fields.edge = 0; \
+    unc_event_select_reg.fields.enable_pmi = 0; \
+    unc_event_select_reg.fields.enable = 1; \
+    unc_event_select_reg.fields.invert = 0; \
+    unc_event_select_reg.fields.cmask = 0;
+
+	MSR[core]->write(MSR_UNC_CBO_1_PERFEVTSEL0, unc_event_select_reg.value);
+
+	//CBO2
+	MSR[core]->read(MSR_UNC_CBO_2_PERFEVTSEL0, &unc_event_select_reg.value);
+
+	unc_event_select_reg.fields.event_select = UNC_CBO_CACHE_LOOKUP_ANY_I_EVENTNR;
+    unc_event_select_reg.fields.umask = UNC_CBO_CACHE_LOOKUP_ANY_I_UMASK;
+
+    unc_event_select_reg.fields.edge = 0; \
+    unc_event_select_reg.fields.enable_pmi = 0; \
+    unc_event_select_reg.fields.enable = 1; \
+    unc_event_select_reg.fields.invert = 0; \
+    unc_event_select_reg.fields.cmask = 0;
+
+	MSR[core]->write(MSR_UNC_CBO_2_PERFEVTSEL0, unc_event_select_reg.value);
+
+
+	//CBO3
+	MSR[core]->read(MSR_UNC_CBO_3_PERFEVTSEL0, &unc_event_select_reg.value);
+
+	unc_event_select_reg.fields.event_select = UNC_CBO_CACHE_LOOKUP_ANY_I_EVENTNR;
+    unc_event_select_reg.fields.umask = UNC_CBO_CACHE_LOOKUP_ANY_I_UMASK;
+
+    unc_event_select_reg.fields.edge = 0; \
+    unc_event_select_reg.fields.enable_pmi = 0; \
+    unc_event_select_reg.fields.enable = 1; \
+    unc_event_select_reg.fields.invert = 0; \
+    unc_event_select_reg.fields.cmask = 0;
+
+	MSR[core]->write(MSR_UNC_CBO_3_PERFEVTSEL0, unc_event_select_reg.value);
+
+	
+	//enable all the uncore counters
+	MSR[core]->read(MSR_UNC_PERF_GLOBAL_CTRL, &unc_control.value);
+
+	unc_control.fields.enable = 1;
+	unc_control.fields.PMI_Sel_Core0 = 0;
+	unc_control.fields.PMI_Sel_Core1 = 0;
+	unc_control.fields.PMI_Sel_Core2 = 0;
+	unc_control.fields.PMI_Sel_Core3 = 0;
+	unc_control.fields.wakePMI = 0;
+	unc_control.fields.FREEZE = 0;
+
+
+	MSR[core]->write(MSR_UNC_PERF_GLOBAL_CTRL, unc_control.value);
+
+
+
+
+
+
+
+
+
+	// synchronise counters
+	MSR[core]->write(MSR_UNC_CBO_0_PER_CTR0, 0);
+	MSR[core]->write(MSR_UNC_CBO_1_PER_CTR0, 0);
+	MSR[core]->write(MSR_UNC_CBO_2_PER_CTR0, 0);
+	MSR[core]->write(MSR_UNC_CBO_3_PER_CTR0, 0);
+
+	MSR[core]->write(MSR_UNC_ARB_PER_CTR0, 0);
+	MSR[core]->write(MSR_UNC_ARB_PER_CTR1, 0);
+	
+
+}
+
 
 void PCM::programNehalemEPUncore(int32 core)
 {

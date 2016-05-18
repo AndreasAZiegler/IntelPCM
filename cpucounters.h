@@ -372,7 +372,7 @@ public:
 
 private:
     ProgramMode mode;
-    CustomCoreEventDescription coreEventDesc[4];
+    CustomCoreEventDescription coreEventDesc[7];
 
         #ifdef _MSC_VER
     HANDLE numInstancesSemaphore;     // global semaphore that counts the number of PCM instances on the system
@@ -449,6 +449,8 @@ private:
     void initQOSevent(const uint64 event, const int32 core);
     void programBecktonUncore(int core);
     void programNehalemEPUncore(int core);
+    void programSandyBridgeUncore(int core);
+    void programHaswellUncore(int core);
     void enableJKTWorkaround(bool enable);
     template <class CounterStateType>
     void readAndAggregateMemoryBWCounters(const uint32 core, CounterStateType & counterState);
