@@ -4,7 +4,7 @@
 #
 
 EXE = pcm-numa.x pcm-power.x pcm.x pcm-sensor.x pcm-msr.x pcm-memory.x pcm-tsx.x pcm-pcie.x pcm-core.x
-LIB = MeasuringCore.lib
+LIB = MeasuringCore.lib measuringcore.o
 
 all: $(EXE) $(LIB)
 
@@ -61,9 +61,11 @@ OBJS = $(COMMON_OBJS) $(EXE_OBJS)
 	  sed -e 's/^ *//' -e 's/$$/:/' >> $*.d
 	@rm -f $*.d.tmp
 
-MeasuringCore.lib: cpucounters.o msr.o pci.o measuring_core.o
-	ar -cvq MeasuringCore.lib msr.o pci.o cpucounters.o measuring_core.o
+MeasuringCore.lib: cpucounters.o msr.o pci.o measuring_core.o client_bw.o
+	ar -cvq MeasuringCore.lib msr.o pci.o cpucounters.o measuring_core.o client_bw.o
 
+measuringcore.o: cpucounters.o msr.o pci.o measuring_core.o client_bw.o
+	ar rcs libmeasuringcore.a msr.o pci.o cpucounters.o measuring_core.o client_bw.o
 
 nice:
 	uncrustify --replace -c ~/uncrustify.cfg *.cpp *.h WinMSRDriver/Win7/*.h WinMSRDriver/Win7/*.c WinMSRDriver/WinXP/*.h WinMSRDriver/WinXP/*.c  PCM_Win/*.h PCM_Win/*.cpp  
