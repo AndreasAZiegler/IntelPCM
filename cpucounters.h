@@ -2066,6 +2066,7 @@ inline double getPackageCStateResidency(int state, const CounterStateType & befo
 template <class CounterStateType>
 uint64 getBytesReadFromMC(const CounterStateType & before, const CounterStateType & after)
 {
+    //std::cout << "after: " << after.UncMCNormalReads << " , before: " << before.UncMCNormalReads << std::endl;
     return (after.UncMCNormalReads - before.UncMCNormalReads) * 64;
 }
 
@@ -2078,6 +2079,7 @@ uint64 getBytesReadFromMC(const CounterStateType & before, const CounterStateTyp
 template <class CounterStateType>
 uint64 getBytesWrittenToMC(const CounterStateType & before, const CounterStateType & after)
 {
+    //std::cout << "after: " << after.UncMCFullReads << " , before: " << before.UncMCFullReads << std::endl;
     return (after.UncMCFullWrites - before.UncMCFullWrites) * 64;
 }
 

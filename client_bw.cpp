@@ -188,8 +188,10 @@ ClientBW::ClientBW() :
        std::cerr <<"ERROR: imcbar is zero." << std::endl;
        throw std::exception();
     }
+    //std::cout << "DEBUG1: imcbar="<<std::hex << imcbar <<std::endl;
     uint64 startAddr = imcbar & (~(4096-1)); // round down to 4K
-    // std::cout << "DEBUG: startAddr="<<std::hex << startAddr <<std::endl;
+    //uint64 startAddr = imcbar;
+    //std::cout << "DEBUG2: startAddr="<<std::hex << startAddr <<std::endl;
     mmapAddr = (char*) mmap(NULL, PCM_CLIENT_IMC_MMAP_SIZE, PROT_READ, MAP_SHARED , fd, startAddr);
 
     if(mmapAddr == MAP_FAILED)
@@ -202,11 +204,13 @@ ClientBW::ClientBW() :
 
 uint64 ClientBW::getImcReads()
 {
+   //std::cout << "getImcReads(): " << *((uint32*)(mmapAddr + PCM_CLIENT_IMC_DRAM_DATA_READS)) << std::endl;
    return *((uint32*)(mmapAddr + PCM_CLIENT_IMC_DRAM_DATA_READS));
 }
 
 uint64 ClientBW::getImcWrites()
 {
+   //std::cout << "getImcWrites(): " << *((uint32*)(mmapAddr + PCM_CLIENT_IMC_DRAM_DATA_WRITES)) << std::endl;
    return *((uint32*)(mmapAddr + PCM_CLIENT_IMC_DRAM_DATA_WRITES));
 }
 

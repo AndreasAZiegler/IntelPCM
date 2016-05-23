@@ -785,7 +785,7 @@ void dumpResults(const char * prefix)
  	ss_read << sprefix << "MC_read.txt";
  	fplist_mcread[0].open(ss_read.str().c_str());
  	//for (it =  plist_mcread[0].begin(); it != plist_mcread[0].end(); ++it)
-  for (it =  plists7[0].begin(); it != plists7[0].end(); ++it)
+  for (it = plist_mcread[0].begin(); it != plist_mcread[0].end(); ++it)
 	{
 		//cout << endl << "Read iterator: " << *it << endl;
  		fplist_mcread[0] << *it << " ";

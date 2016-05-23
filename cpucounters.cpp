@@ -3212,6 +3212,8 @@ void PCM::readAndAggregateUncoreMCCounters(const uint32 socket, CounterStateType
         result.UncMCNormalReads += clientImcReads->read();
         result.UncMCFullWrites += clientImcWrites->read();
         result.UncMCIORequests += clientIoRequests->read();
+        //std::cout << "UncMCNormalReads: " << result.UncMCNormalReads << std::endl;
+        //std::cout << "UncMCNormalWrites: " << result.UncMCFullWrites << std::endl;
     }
     else
     {

@@ -586,8 +586,11 @@ PciHandleMM::PciHandleMM(uint32 groupnr_, uint32 bus_, uint32 device_, uint32 fu
     }
     
     base_addr = mcfgRecords[segment].baseAddress;
+    //printf("base addr: 0x%04x\n", base_addr);
 
     base_addr += (bus * 1024 * 1024 + device * 32 * 1024 + function * 4 * 1024);
+
+    //printf("bus: %i, device: %i, function: %i, base_addr: 0x%04x", bus, device, function, base_addr);
     
     mmapAddr = (char*) mmap(NULL, 4096, PROT_READ| PROT_WRITE, MAP_SHARED , fd, base_addr);
     
