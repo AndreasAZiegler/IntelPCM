@@ -42,8 +42,11 @@ The make file will also generate a .lib and a .a library
 This is the modified version of PCM that is enriched with the following functions:
 
 int measurement_init(long * custom_counters , unsigned long offcore_response0 , unsigned long offcore_response1 );
+
 void measurement_start();
+
 void measurement_stop(unsigned long runs);
+
 void measurement_end();  
 
 
