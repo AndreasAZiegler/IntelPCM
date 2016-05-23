@@ -1,6 +1,6 @@
 # IntelPCM
 
-This program is based on the IntelPCM tool (http://software.intel.com/en-us/articles/intel-performance-counter-monitor-a-better-way-to-measure-cpu-utilization). And similar modified as in https://github.com/GeorgOfenbeck/perfplot
+This program is based on the IntelPCM tool (http://software.intel.com/en-us/articles/intel-performance-counter-monitor-a-better-way-to-measure-cpu-utilization) and similar modified as in https://github.com/GeorgOfenbeck/perfplot
 
 I actually tried to get the funtions measurement_start(), measurement_stop(unsigned long runs) and measurement_end() running with the current IntelPCM tool.
 
