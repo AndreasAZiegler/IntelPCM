@@ -26,7 +26,9 @@ Short version for linux:
   I had to execute the following commands as root to get it running:
 
   sudo modprobe msr
+  
   sudo echo -1 > /proc/sys/kernel/perf_event_paranoid
+  
   sudo echo 0 > /proc/sys/kernel/nmi_watchdog
 
   If it still doesn't work, you may have to recompile the linux kernel with deactivated CONFIG_STRICT_DEVMEM
