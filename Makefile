@@ -4,7 +4,7 @@
 #
 
 EXE = pcm-numa.x pcm-power.x pcm.x pcm-sensor.x pcm-msr.x pcm-memory.x pcm-tsx.x pcm-pcie.x pcm-core.x
-LIB = MeasuringCore.lib measuringcore.o
+LIB = MeasuringCore.lib measuringcore.o libmeasuringcore.so
 
 all: $(EXE) $(LIB)
 
@@ -21,7 +21,7 @@ UNAME:=$(shell uname)
 
 ifeq ($(UNAME), Linux)
 LIB= -pthread -lrt
-CXXFLAGS += -std=c++0x
+CXXFLAGS += -std=c++0x -fPIC
 endif
 ifeq ($(UNAME), Darwin)
 LIB= -lpthread /usr/lib/libPcmMsr.dylib 
@@ -66,6 +66,9 @@ MeasuringCore.lib: cpucounters.o msr.o pci.o measuring_core.o client_bw.o
 
 measuringcore.o: cpucounters.o msr.o pci.o measuring_core.o client_bw.o
 	ar rcs libmeasuringcore.a msr.o pci.o cpucounters.o measuring_core.o client_bw.o
+
+libmeasuringcore.so: measuring_core.o
+	$(CXX) -shared -o libmeasuringcore.so measuring_core.o
 
 nice:
 	uncrustify --replace -c ~/uncrustify.cfg *.cpp *.h WinMSRDriver/Win7/*.h WinMSRDriver/Win7/*.c WinMSRDriver/WinXP/*.h WinMSRDriver/WinXP/*.c  PCM_Win/*.h PCM_Win/*.cpp  
