@@ -97,6 +97,7 @@ long cycles_a, cycles_b;
  list<uint64> *plist_nrruns;
  list<uint64> *plist_mcread;
  list<uint64> *plist_mcwrite;
+ list<uint64> *plist_mc;
 
 
  ofstream * fplist_nrruns;
@@ -113,6 +114,7 @@ long cycles_a, cycles_b;
  ofstream * fplist_tsc;
  ofstream * fplist_mcread;
  ofstream * fplist_mcwrite;
+ ofstream * fplist_mc;
  
 // Dani start
  vector<size_t> *runvec;
@@ -406,6 +408,7 @@ int measurement_init(long * custom_counters, const unsigned long offcore_respons
    plist_nrruns = new list<uint64>[1];
    plist_mcread = new list<uint64>[1]; 
    plist_mcwrite = new list<uint64>[1];
+   plist_mc = new list<uint64>[1];
 
 
    //Dani start
@@ -414,6 +417,7 @@ int measurement_init(long * custom_counters, const unsigned long offcore_respons
    
    //Dani end
 
+   return(0);
 }
 
 void measurement_start ()
@@ -433,17 +437,17 @@ void measurement_start ()
 	*/
 
 	cstates1 = new  CoreCounterState[PCM::getInstance()->getNumCores()];
-    cstates2 = new  CoreCounterState[PCM::getInstance()->getNumCores()];
-    sktstate1 = new SocketCounterState[m->getNumSockets()];
-    sktstate2 = new SocketCounterState[m->getNumSockets()];    
+  cstates2 = new  CoreCounterState[PCM::getInstance()->getNumCores()];
+  sktstate1 = new SocketCounterState[m->getNumSockets()];
+  sktstate2 = new SocketCounterState[m->getNumSockets()];    
 	sstate1 = new SystemCounterState();
 	sstate2 = new SystemCounterState();
-    const int cpu_model = m->getCPUModel();
-    *sstate1 = getSystemCounterState();
-    for (uint32 i = 0; i < m->getNumSockets(); ++i)
-        sktstate1[i] = getSocketCounterState(i);
-    for (uint32 i = 0; i < m->getNumCores(); ++i)
-        cstates1[i] = getCoreCounterState(i);	
+  const int cpu_model = m->getCPUModel();
+  *sstate1 = getSystemCounterState();
+  for (uint32 i = 0; i < m->getNumSockets(); ++i)
+    sktstate1[i] = getSocketCounterState(i);
+  for (uint32 i = 0; i < m->getNumCores(); ++i)
+    cstates1[i] = getCoreCounterState(i);	
 }
 
 
@@ -509,6 +513,7 @@ void measurement_stop(unsigned long nr_runs)
 	
 	plist_mcread[0].push_front( (sysRead/nr_runs) );
 	plist_mcwrite[0].push_front( (sysWrite/nr_runs) );
+	plist_mc[0].push_front( (sysRead/nr_runs) + (sysWrite/nr_runs) );
 
 	//cout << endl << "Read: " << sysRead << endl;
 	//cout << endl << "Write: " <<sysWrite << endl;
@@ -546,6 +551,7 @@ void measurement_emptyLists(bool clearRuns)
 	plist_nrruns[0].clear();
 	plist_mcread[0].clear();
 	plist_mcwrite[0].clear();
+	plist_mc[0].clear();
 	
 	if(clearRuns) {
 		runvec->clear();
@@ -692,6 +698,7 @@ void dumpResults(const char * prefix)
 
  	fplist_mcread = new ofstream[1];
  	fplist_mcwrite = new ofstream[1];
+ 	fplist_mc = new ofstream[1];
 
  	fplist_nrruns = new ofstream[1];
 
@@ -801,6 +808,16 @@ void dumpResults(const char * prefix)
 		fplist_mcwrite[0] << *it << " ";
 	}
  	fplist_mcwrite[0].close();
+
+ 	stringstream ss;
+ 	ss << sprefix << "MC.txt";
+ 	fplist_mc[0].open(ss.str().c_str());
+ 	for (it =  plist_mc[0].begin(); it != plist_mc[0].end(); ++it)
+ 	{
+		//cout << endl << "Write iterator: " << *it << endl;
+		fplist_mc[0] << *it << " ";
+	}
+ 	fplist_mc[0].close();
 
 
  	stringstream ss_nrruns;

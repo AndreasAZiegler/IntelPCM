@@ -20,6 +20,7 @@ endif
 UNAME:=$(shell uname)
 
 ifeq ($(UNAME), Linux)
+CXX= /usr/local/bin/intel/bin/icpc
 LIB= -pthread -lrt
 CXXFLAGS += -std=c++0x -fPIC
 endif
@@ -30,7 +31,6 @@ endif
 ifeq ($(UNAME), FreeBSD)
 CXX=c++
 LIB= -lpthread -lc++
-CXXFLAGS += -std=c++0x
 endif
 
 COMMON_OBJS = msr.o cpucounters.o pci.o client_bw.o utils.o
@@ -67,11 +67,11 @@ MeasuringCore.lib: cpucounters.o msr.o pci.o measuring_core.o client_bw.o
 measuringcore.o: cpucounters.o msr.o pci.o measuring_core.o client_bw.o
 	ar rcs libmeasuringcore.a msr.o pci.o cpucounters.o measuring_core.o client_bw.o
 
-libmeasuringcore.so: measuring_core.o
-	$(CXX) -shared -o libmeasuringcore.so measuring_core.o
+libmeasuringcore.so: cpucounters.o msr.o pci.o measuring_core.o client_bw.o
+	$(CXX) $(CXXFLAGS) -shared -o libmeasuringcore.so cpucounters.o msr.o pci.o measuring_core.o client_bw.o
 
 nice:
 	uncrustify --replace -c ~/uncrustify.cfg *.cpp *.h WinMSRDriver/Win7/*.h WinMSRDriver/Win7/*.c WinMSRDriver/WinXP/*.h WinMSRDriver/WinXP/*.c  PCM_Win/*.h PCM_Win/*.cpp  
 
 clean:
-	rm -rf *.x *.o *~ *.d
+	rm -rf *.x *.o *.so *~ *.d
